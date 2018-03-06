@@ -1,14 +1,15 @@
-module.exports = function count(s, pairs) { // 
-
+module.exports = function count(s, pairs) {
 	const mod = 1000000007;
-	let N = findN(pairs), flagNotBreak = true;
+	let flagNotBreak = true;
+	let N = findN(pairs, mod); 
 	let exponentMod = findExpMod(pairs, mod);
-
-	console.log(exponentMod);
-
-	if(N > 10000000) return;  //can't solve yet for N > 1000000
-	      											   
 	let count = 0;
+
+	console.log(exponentMod, "   :  " + N);
+
+	if(s.length == 1) return caseForS_One(pairs, s, N, exponentMod, mod);
+
+  	if(N > 10000000) return;  //can't solve  for N > 1000000 yet
 
 	for(let k = 1; k <= N; k++){		
 		for(let j = 0; j < s.length; j++){		
@@ -34,6 +35,16 @@ module.exports = function count(s, pairs) { //
 	return multiMod(count ,exponentMod, mod);
 }
 
+
+let findN = function(pairs, mod){
+	let N = 1;
+
+	for(let i = 0; i < pairs.length; i++)
+		N *= pairs[i][0];  
+	
+	return N;
+}
+
 let findExpMod = function(pairs, mod){
 	let exp = 1,currentExp;
 
@@ -43,6 +54,23 @@ let findExpMod = function(pairs, mod){
 	}
 
 	return exp;
+}
+
+let caseForS_One = function(pairs, s, N, exponentMod,mod){
+	let caseN = N;
+	let count = 0;
+	let caseCount = 0;
+	
+    for (let i = 0; i < pairs.length; i++){
+		caseCount = caseN / pairs[i][0];
+		caseN -= caseCount;
+    	count += caseCount;
+	}
+	
+	if(s[0] == '0')
+		return (count * exponentMod) % mod;
+	else 
+		return ((N - count) * exponentMod) % mod;  
 }
 
 let powerMod = function(base, exponent, modulus){ //Modular exponentiation, avoiding overflow
@@ -74,15 +102,6 @@ let multiMod = function(a, b, mod){
 	return result % mod;
   }
 
-let findN = function(pairs){
-	let N = 1;
-
-	for(let i = 0; i < pairs.length; i++)
-		N *= pairs[i][0];  
-	
-	return N;
-}
-
 let gcd = function(a,b) {
     a = Math.abs(a);
     b = Math.abs(b);
@@ -95,8 +114,6 @@ let gcd = function(a,b) {
     }
 }
 
-// console.log(count('01', [[3, 3]]))
-
-// console.log(count('1011', [[3, 1000000000]]))
+  
 
 
